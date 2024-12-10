@@ -1,4 +1,4 @@
-with open("inputs/day9/exampleinput.txt") as f:
+with open("inputs/day9/input.txt") as f:
     lines = f.read().splitlines()
 
 input = lines[0]
@@ -48,23 +48,11 @@ for i in range(len(disk)):
             last_unassigned -= 1
         endp = last_unassigned
         while endp > i and free_space > 0:
-            print(f"endp: {endp}, free_space: {free_space}")
             if disk[endp][0] != -1 and disk[endp][1] <= free_space and disk[endp][1] != 0:
                 free_space -= disk[endp][1]
                 filewise_compressed_disk.append((disk[endp][0], disk[endp][1]))
-                
                 disk[endp] = (-1, disk[endp][1])
-
-                to_assign = endp-1
-                while to_assign > 0 and disk[to_assign][0] == -1:
-                    to_assign -= 1
-                to_assign += 1
-
-                next_free_space = endp
-                while next_free_space < len(disk) and disk[next_free_space][0] == -1:
-                    disk[to_assign] = (-1, disk[to_assign][1] + disk[next_free_space][1])
-                    disk[next_free_space] = (-1, 0)
-                    next_free_space += 1
+            
             endp -= 1
         if free_space > 0:
             filewise_compressed_disk.append((-1, free_space))
@@ -81,7 +69,8 @@ filewise_checksum = 0
 real_i = 0
 for i in range(len(filewise_compressed_disk)):
     for j in range(filewise_compressed_disk[i][1]):
-        filewise_checksum += real_i * filewise_compressed_disk[i][0]
+        if filewise_compressed_disk[i][0] != -1:
+            filewise_checksum += real_i * filewise_compressed_disk[i][0]
         real_i += 1
 
 print(blockwise_compressed_disk)
